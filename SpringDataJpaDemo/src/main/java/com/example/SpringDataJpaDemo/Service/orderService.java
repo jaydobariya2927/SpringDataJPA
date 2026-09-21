@@ -9,6 +9,9 @@ import com.example.SpringDataJpaDemo.entities.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class orderService {
@@ -16,14 +19,25 @@ public class orderService {
     private final UserRepository userRepository;
 
 
-    public  OrderDto createOrder(Long userId, CreateOrderDto createOrderDto) {
+    public OrderDto createOrder(Long userId, CreateOrderDto createOrderDto) {
         User user = userRepository.findById(userId).orElseThrow();
         Order order = new Order();
         order.setUser(user);
         order.setProductName(createOrderDto.getProductname());
 
-         Order savedOrder = orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
 
-         return new OrderDto(savedOrder.getId(), savedOrder.getProductName(), savedOrder.getUser());
+        return new OrderDto(savedOrder.getId(), savedOrder.getProductName(), savedOrder.getUser());
+    }
+
+    public List<OrderDto> getOrderByuserId(Long userid) {
+        List<Order> orders = orderRepository.findByUserId(userid);
+        List<OrderDto> orderDtos = new ArrayList<>();
+        orders.forEach(order -> {
+            OrderDto orderDto = new OrderDto(order.getId(), order.getProductName(), order.getUser());
+            orderDtos.add(orderDto);
+        });
+        return orderDtos;
+
     }
 }
