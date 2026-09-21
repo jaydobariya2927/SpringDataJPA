@@ -7,6 +7,10 @@ import com.example.SpringDataJpaDemo.dto.UserDto;
 import com.example.SpringDataJpaDemo.entities.User;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,5 +79,18 @@ public class UserService {
         }
 
         return new UserDto(user.getId(), user.getName(), user.getEmail());
+    }
+
+    public List<UserDto> getUsersPaginated(int page, int pageSize, String direction, String sortBy) {
+        Sort sort;
+        sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+        Page<User> usersPage = userRepository.findAll(pageable);
+
+        List<UserDto> userDtoList = new ArrayList<>();
+        usersPage.forEach(user -> userDtoList.add(new UserDto(user.getId(), user.getName(), user.getEmail())));
+
+        return userDtoList;
     }
 }
