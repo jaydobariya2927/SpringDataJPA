@@ -6,8 +6,10 @@ import com.example.SpringDataJpaDemo.dto.CreateOrderDto;
 import com.example.SpringDataJpaDemo.dto.OrderDto;
 import com.example.SpringDataJpaDemo.entities.Order;
 import com.example.SpringDataJpaDemo.entities.User;
+import com.example.SpringDataJpaDemo.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +21,10 @@ public class orderService {
     private final UserRepository userRepository;
 
 
+    @Transactional
     public OrderDto createOrder(Long userId, CreateOrderDto createOrderDto) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException("User not Found with id: "+ userId));
         Order order = new Order();
         order.setUser(user);
         order.setProductName(createOrderDto.getProductname());

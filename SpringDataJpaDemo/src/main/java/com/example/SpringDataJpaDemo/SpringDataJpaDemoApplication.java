@@ -8,6 +8,7 @@ public class SpringDataJpaDemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringDataJpaDemoApplication.class, args);
+
 	}
 
 }

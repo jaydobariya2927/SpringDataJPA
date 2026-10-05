@@ -5,6 +5,7 @@ import com.example.SpringDataJpaDemo.Repository.UserRepository;
 import com.example.SpringDataJpaDemo.dto.CreateUserDto;
 import com.example.SpringDataJpaDemo.dto.UserDto;
 import com.example.SpringDataJpaDemo.entities.User;
+import com.example.SpringDataJpaDemo.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,7 @@ public class UserService {
 
 
     public UserDto getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not Found with id: "+ id));
         return new UserDto(user.getId(), user.getName(), user.getEmail());
 
     }
