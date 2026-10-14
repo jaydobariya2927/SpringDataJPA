@@ -25,24 +25,9 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/users/*/order/**").hasAnyRole("ADMIN" , "USER")
                                 .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
 
-                                .anyRequest().authenticated()).httpBasic(Customizer.withDefaults());
+                                .anyRequest().authenticated());
 
         return httpSecurity.build();
-    }
-
-    @Bean
-    UserDetailsManager userDetailsManager(PasswordEncoder passwordEncoder) {
-        UserDetails admin = User.withUsername("Admin")
-                .roles("ADMIN")
-                .password(passwordEncoder.encode("Pass123"))
-                .build();
-
-        UserDetails user = User.withUsername("Jay")
-                .roles("USER")
-                .password(passwordEncoder.encode("User123"))
-                .build();
-
-        return new InMemoryUserDetailsManager(user, admin);
     }
 
     @Bean
